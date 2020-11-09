@@ -98,7 +98,7 @@ equipoOP_idCiudad int,
 BEGIN TRANSACTION
 --CARGA MASIVA DE DATOS
 BULK INSERT datos
-FROM 'F:\Licenciatura en sistemas de informacion\Base de datos\Trabajos prácticos\el mas nazi\NBADataBase\datos'
+FROM 'C:\Users\Matias Sotelo\Desktop\bdd\NBADataBase\datos\creacion.csv'
 WITH (
 FIELDTERMINATOR = ';',
 ROWTERMINATOR = '\n'
@@ -115,3 +115,4 @@ ADD id_division INT NULL
 ALTER TABLE datos
 ADD id_ganador INT NULL
 COMMIT
+

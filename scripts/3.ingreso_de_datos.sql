@@ -56,6 +56,7 @@ BEGIN TRAN
 INSERT INTO temporada(id_temporada, descripcion)
 SELECT DISTINCT	temporada_id, temporada_descripcion FROM datos
 COMMIT
+
 --ACA CARGAMOS EQUIPO
 BEGIN TRAN 
 INSERT INTO equipo(id_equipo, nombre, codigo, acronimo, id_ciudad, id_division)
@@ -78,6 +79,10 @@ SET id_ganador = case
 COMMIT
 
 --ACA CARGAMOS PARTIDO
+update datos
+set fecha = '2019-03-08'
+WHERE partido_id = 21800976
+
 BEGIN TRAN
 INSERT INTO partido(id_partido, fecha, id_temporada, id_ganador)
 SELECT DISTINCT partido_id, fecha, temporada_id, id_ganador FROM datos

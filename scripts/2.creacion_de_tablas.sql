@@ -104,7 +104,8 @@ CREATE TABLE partido(
 id_partido INT NOT NULL,
 fecha datetime,
 id_ganador INT NOT NULL FOREIGN KEY REFERENCES equipo(id_equipo),
-CONSTRAINT PK_PARTIDO PRIMARY KEY CLUSTERED (id_partido),
+id_temporada INT NOT NULL FOREIGN KEY REFERENCES temporada(id_temporada),
+CONSTRAINT PK_PARTIDO PRIMARY KEY CLUSTERED (id_partido)
 )
 
 COMMIT
