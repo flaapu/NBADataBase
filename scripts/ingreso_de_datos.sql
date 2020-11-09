@@ -198,3 +198,4 @@ SELECT DISTINCT jugador_id, partido_id, stat_perdidas_id, stat_perdidas_valor fr
 
 COMMIT
 
+
