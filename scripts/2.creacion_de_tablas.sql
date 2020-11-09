@@ -103,8 +103,7 @@ BEGIN TRANSACTION
 CREATE TABLE partido(
 id_partido INT NOT NULL,
 fecha datetime,
-resultado varchar(10) NULL,
-id_equipo INT NOT NULL FOREIGN KEY REFERENCES equipo(id_equipo),
+id_ganador INT NOT NULL FOREIGN KEY REFERENCES equipo(id_equipo),
 CONSTRAINT PK_PARTIDO PRIMARY KEY CLUSTERED (id_partido),
 )
 
@@ -146,4 +145,10 @@ nro_camiseta INT NULL,
 CONSTRAINT PK_CONTRATA PRIMARY KEY CLUSTERED (id_jugador, id_equipo, id_temporada),
 )
 COMMIT
+
+
+
+
+
+
 

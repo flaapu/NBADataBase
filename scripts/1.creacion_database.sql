@@ -92,7 +92,7 @@ resultado varchar(10),
 temporada_descripcion varchar(20),
 idPais int,
 equipo_idCiudad int,
-equipoOP_idCiudad int
+equipoOP_idCiudad int,
 )
 
 BEGIN TRANSACTION
@@ -105,3 +105,13 @@ ROWTERMINATOR = '\n'
 )
 COMMIT
 
+BEGIN TRAN
+ALTER TABLE datos
+ADD id_conferencia INT NULL
+
+ALTER TABLE datos
+ADD id_division INT NULL
+
+ALTER TABLE datos
+ADD id_ganador INT NULL
+COMMIT
