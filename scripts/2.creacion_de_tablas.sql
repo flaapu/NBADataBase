@@ -70,7 +70,6 @@ id_equipo INT NOT NULL,
 nombre VARCHAR(50) NOT NULL,
 codigo varchar(30) NOT NULL UNIQUE,
 acronimo CHAR(5) NOT NULL,
-descripcion VARCHAR(20) NULL,
 id_ciudad INT NOT NULL,
 id_division INT NOT NULL, 
 
