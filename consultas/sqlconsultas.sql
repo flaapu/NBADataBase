@@ -80,8 +80,7 @@ GROUP BY  division.nombre
 -- 11. Cantidad de puntos, rebotes, asistencias totales realizados por Chris Paul contra equipos de la otra conferencia.
 ---------------MODIFICAR -----------------
 select jugador.nombre, estadistica.descripcion, SUM(registro.valor) as cantidadPuntos
-FROM registro, (SELECT 
-) as a
+FROM registro
 INNER JOIN jugador on registro.id_jugador = jugador.id_jugador
 INNER JOIN estadistica ON registro.id_estadistica = estadistica.id_estadistica
 INNER JOIN contrata ON jugador.id_jugador = contrata.id_jugador
@@ -115,6 +114,38 @@ GROUP BY pais.nombre
 ORDER BY CantidadJugadores desc
 
 -- 13. Cantidad de jugadores con más de 15 años de carrera, cantidad entre 15 y 10 y cantidad con menos de 10 años.
+
+SELECT MasQuince, EntreDiezQuince, MenosDiez FROM
+(SELECT count(jugador.draft_year) as MasQuince FROM jugador
+WHERE 15 < (year(getdate()) - jugador.draft_year)) as a, 
+(SELECT count(jugador.draft_year) as EntreDiezQuince FROM jugador
+WHERE 15 >= (year(getdate()) - jugador.draft_year)
+AND 10 <= (year(getdate()) - jugador.draft_year)) as b,
+(SELECT count(jugador.draft_year) as MenosDiez FROM jugador
+WHERE 10 > (year(getdate()) - jugador.draft_year)) as c
+
 -- 14. Cantidad de partidos en que los que al menos un jugador de los Celtics obtuvo más de 10 rebotes en total.
+
+SELECT COUNT(contador) as 'Cantidad de Partidos' from 
+(SELECT distinct registro.id_partido as contador, registro.valor AS 'Cantidad Rebotes' FROM registro
+INNER JOIN estadistica on registro.id_estadistica = estadistica.id_estadistica
+INNER JOIN contrata ON registro.id_jugador = contrata.id_jugador
+INNER JOIN equipo ON contrata.id_equipo = equipo.id_equipo
+INNER JOIN partidoxequipo ON equipo.id_equipo = partidoxequipo.id_equipo
+WHERE estadistica.descripcion LIKE 'Rebotes%'
+AND equipo.nombre LIKE 'Celtics'
+AND registro.valor > 10
+GROUP BY registro.id_jugador, registro.id_partido, registro.valor) as SubQuery
+
 -- 15. Indicar ID de partido, fecha, sigla y puntos realizados del equipo local y visitante, 
 --		del partido en que Ricky Rubio hizo más puntos en esta temporada.
+
+SELECT TOP 2 partido.id_partido as ID_Partido, cast((partido.fecha) as date) as Fecha, equipo.acronimo as Siglas, partidoxequipo.puntos as Puntos, partidoxequipo.esLocal FROM partido
+INNER JOIN partidoxequipo ON partido.id_partido = partidoxequipo.id_partido
+INNER JOIN equipo ON partidoxequipo.id_equipo = equipo.id_equipo
+INNER JOIN registro ON partidoxequipo.id_partido = registro.id_partido
+INNER JOIN jugador ON registro.id_jugador = jugador.id_jugador
+INNER JOIN estadistica ON registro.id_estadistica = estadistica.id_estadistica
+WHERE jugador.nombre LIKE 'Ricky' AND jugador.apellido LIKE 'Rubio'
+AND estadistica.descripcion LIKE 'Puntos'
+ORDER BY registro.valor DESC
