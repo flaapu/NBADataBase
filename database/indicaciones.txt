@@ -1,5 +1,0 @@
-colocar ambos archivos en la ruta:
-
-C:\Program Files\Microsoft SQL Server\MSSQL15.SQLEXPRESS\MSSQL\DATA
-
-dependiendo la version de Sql server Management Studio puede cambiar el nombre de "MSSQL15.SQLEXPRESS"
