@@ -1,0 +1,22 @@
+Para crear la base de datos se deben ejecutar los 3 scripts que se encuentran en la carpeta scripts, en ese orden. 
+Antes de ejecutarlos, se debe cambiar la ruta de creación de archivos csv para que esto funcione.
+el archivo creacion.csv se encuentra dentro de la carpeta datos.
+NBADataBase\datos\creacion.csv
+
+Luego de haber realizado esto, se  podrán ejecutar los scripts antes mencionados de forma correcta.
+NBADataBase\scripts\1.creacion_database.sql
+NBADataBase\scripts\2.creacion_de_tablas.sql
+NBADataBase\scripts\3.ingreso_de_datos.sql
+
+Posterior a esto, se podran realizar las consultas que se encuentran dentro de la carpeta consultas.
+NBADataBase\consultas\sqlconsultas.sql
+
+Podran ver además, dentro de esa carpeta, una carpeta que se llama imagenes_consultas, donde estan cada una de las consultas
+por separado y su resultado por consola. 
+NBADataBase\consultas\imagenes_consultas
+
+Por otro lado, en la carpeta diseños, se encuentran el DER y el modelo relacional sobre el trabajo.
+NBADataBase\diseños
+
+
+El link al Git es: https://github.com/flaapu/NBADataBase
