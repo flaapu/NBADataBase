@@ -78,77 +78,77 @@ INNER JOIN division ON equipo.id_division = division.id_division
 GROUP BY  division.nombre
 
 -- 11. Cantidad de puntos, rebotes, asistencias totales realizados por Chris Paul contra equipos de la otra conferencia.
----------------MODIFICAR -----------------
-SELECT estadistica.id_estadistica, sum(registro.valor) as 'Contador', conferencia.nombre FROM registro
+
+
+SELECT  SUM(asisTOT) as totalAsistencias,
+SUM(rebsOTOT) as totalRebotesOfensivos,
+SUM(rebsDTOT) as totalRebotesDefensivos,
+SUM(puntosTOT) as totalPuntos
+FROM partidoxequipo
+INNER JOIN equipo on equipo.id_equipo LIKE partidoxequipo.id_equipo
+INNER JOIN division on equipo.id_division = division.id_division
+INNER JOIN conferencia on division.id_conferencia = conferencia.id_conferencia,
+
+(SELECT equipo.id_equipo as equipoCP, partidoxequipo.id_partido as encuentrosCP, conferencia.nombre as confCP FROM equipo
+INNER JOIN division on equipo.id_division = division.id_division
+INNER JOIN conferencia on division.id_conferencia = conferencia.id_conferencia
+INNER JOIN contrata on equipo.id_equipo = contrata.id_equipo
+INNER JOIN jugador on contrata.id_jugador = jugador.id_jugador
+INNER JOIN partidoxequipo on equipo.id_equipo LIKE partidoxequipo.id_equipo
+WHERE jugador.nombre LIKE 'Chris' AND jugador.apellido LIKE 'Paul') as queryinfo,
+
+(SELECT registro.id_partido as encuentroContado1, estadistica.descripcion, SUM(registro.valor) as asisTOT FROM equipo
+INNER JOIN division on equipo.id_division = division.id_division
+INNER JOIN conferencia on division.id_conferencia = conferencia.id_conferencia
+INNER JOIN contrata on equipo.id_equipo = contrata.id_equipo
+INNER JOIN jugador on contrata.id_jugador = jugador.id_jugador
+INNER JOIN registro on jugador.id_jugador = registro.id_jugador 
 INNER JOIN estadistica on registro.id_estadistica = estadistica.id_estadistica
-INNER JOIN jugador on registro.id_jugador = jugador.id_jugador
-INNER JOIN contrata on jugador.id_jugador = contrata.id_jugador
-INNER JOIN equipo on contrata.id_equipo = equipo.id_equipo
-INNER JOIN division on equipo.id_division = division.id_division
-INNER JOIN conferencia on division.id_conferencia = conferencia.id_conferencia
-INNER JOIN partidoxequipo on equipo.id_equipo = partidoxequipo.id_equipo,
-
-(SELECT partidoxequipo.id_partido as Encuentro, conferencia.nombre as ConfContrincante FROM partidoxequipo
-INNER JOIN equipo on partidoxequipo.id_equipo = equipo.id_equipo
-INNER JOIN contrata on equipo.id_equipo = contrata.id_equipo
-INNER JOIN jugador on contrata.id_jugador = jugador.id_jugador
-INNER JOIN division on equipo.id_division = division.id_division
-INNER JOIN conferencia on division.id_conferencia = conferencia.id_conferencia
-WHERE jugador.nombre NOT LIKE 'Chris' AND jugador.apellido NOT LIKE 'Paul'
-GROUP BY partidoxequipo.id_partido, conferencia.nombre
-) as Subquery
-
 WHERE jugador.nombre LIKE 'Chris' AND jugador.apellido LIKE 'Paul'
 AND estadistica.descripcion LIKE 'Asistencias'
-AND partidoxequipo.id_partido LIKE Encuentro
-AND ConfContrincante NOT LIKE conferencia.nombre
-GROUP BY estadistica.id_estadistica, conferencia.nombre
+GROUP BY registro.id_partido, estadistica.descripcion) as registroinfo,
 
---
-
-SELECT partidoxequipo.id_partido, estadistica.descripcion, sum(registro.valor) FROM partidoxequipo
-INNER JOIN partido on partido.id_partido = partidoxequipo.id_partido
-INNER JOIN equipo on partidoxequipo.id_equipo = equipo.id_equipo
+(SELECT registro.id_partido as encuentroContado2, estadistica.descripcion, SUM(registro.valor) as puntosTOT FROM equipo
+INNER JOIN division on equipo.id_division = division.id_division
+INNER JOIN conferencia on division.id_conferencia = conferencia.id_conferencia
 INNER JOIN contrata on equipo.id_equipo = contrata.id_equipo
 INNER JOIN jugador on contrata.id_jugador = jugador.id_jugador
-INNER JOIN division on equipo.id_division = division.id_division
-INNER JOIN registro on registro.id_jugador = jugador.id_jugador
+INNER JOIN registro on jugador.id_jugador = registro.id_jugador 
 INNER JOIN estadistica on registro.id_estadistica = estadistica.id_estadistica
-INNER JOIN conferencia on division.id_conferencia = conferencia.id_conferencia
 WHERE jugador.nombre LIKE 'Chris' AND jugador.apellido LIKE 'Paul'
-AND estadistica.descripcion LIKE 'Asistencias'
-GROUP BY partidoxequipo.id_partido, estadistica.descripcion
-ORDER BY partidoxequipo.id_partido DESC
+AND estadistica.descripcion LIKE 'Puntos'
+GROUP BY registro.id_partido, estadistica.descripcion) as infoPuntos,
 
---
-
-SELECT * FROM equipo
+(SELECT registro.id_partido as encuentroContado3, estadistica.descripcion, SUM(registro.valor) as rebsOTOT FROM equipo
+INNER JOIN division on equipo.id_division = division.id_division
+INNER JOIN conferencia on division.id_conferencia = conferencia.id_conferencia
 INNER JOIN contrata on equipo.id_equipo = contrata.id_equipo
 INNER JOIN jugador on contrata.id_jugador = jugador.id_jugador
+INNER JOIN registro on jugador.id_jugador = registro.id_jugador 
+INNER JOIN estadistica on registro.id_estadistica = estadistica.id_estadistica
 WHERE jugador.nombre LIKE 'Chris' AND jugador.apellido LIKE 'Paul'
+AND estadistica.descripcion LIKE 'Rebotes ofensivos'
+GROUP BY registro.id_partido, estadistica.descripcion) as infoRebsO,
 
---
-
-SELECT jugador.nombre, estadistica.descripcion, SUM(registro.valor) as cantidadPuntos
-FROM registro
-INNER JOIN jugador on registro.id_jugador = jugador.id_jugador
-INNER JOIN estadistica ON registro.id_estadistica = estadistica.id_estadistica
-INNER JOIN contrata ON jugador.id_jugador = contrata.id_jugador
-INNER JOIN equipo ON contrata.id_equipo = equipo.id_equipo
-INNER JOIN division ON equipo.id_division = division.id_division
-INNER JOIN conferencia ON division.id_conferencia = conferencia.id_conferencia
-INNER JOIN partidoxequipo ON equipo.id_equipo = partidoxequipo.id_equipo
+(SELECT registro.id_partido as encuentroContado4, estadistica.descripcion, SUM(registro.valor) as rebsDTOT FROM equipo
+INNER JOIN division on equipo.id_division = division.id_division
+INNER JOIN conferencia on division.id_conferencia = conferencia.id_conferencia
+INNER JOIN contrata on equipo.id_equipo = contrata.id_equipo
+INNER JOIN jugador on contrata.id_jugador = jugador.id_jugador
+INNER JOIN registro on jugador.id_jugador = registro.id_jugador 
+INNER JOIN estadistica on registro.id_estadistica = estadistica.id_estadistica
 WHERE jugador.nombre LIKE 'Chris' AND jugador.apellido LIKE 'Paul'
-AND estadistica.descripcion LIKE 'Puntos' 
-OR jugador.nombre LIKE 'Chris' AND jugador.apellido LIKE 'Paul'
-AND estadistica.descripcion LIKE 'Rebotes%'
-OR jugador.nombre LIKE 'Chris' AND jugador.apellido LIKE 'Paul'
-AND estadistica.descripcion LIKE 'Asistencias'
-GROUP BY jugador.nombre, estadistica.descripcion
+AND estadistica.descripcion LIKE 'Rebotes defensivos'
+GROUP BY registro.id_partido, estadistica.descripcion) as infoRebsD
 
+WHERE partidoxequipo.id_partido LIKE encuentrosCP 
+AND partidoxequipo.id_partido LIKE encuentroContado1
+AND partidoxequipo.id_partido LIKE encuentroContado2
+AND partidoxequipo.id_partido LIKE encuentroContado3
+AND partidoxequipo.id_partido LIKE encuentroContado4
+AND partidoxequipo.id_equipo NOT LIKE equipoCP
+AND conferencia.nombre NOT LIKE confCP
 
-
----------------MODIFICAR -----------------
 
 -- 12. Promedio de minutos jugados por partido de los jugadores originarios del país del punto 8. 
 --		Se considera partido jugado si jugó al menos 1 minuto en el partido.
