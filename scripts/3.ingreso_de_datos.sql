@@ -204,3 +204,7 @@ SELECT DISTINCT jugador_id, partido_id, stat_perdidas_id, stat_perdidas_valor fr
 COMMIT
 
 
+-- Eliminamos la tabla de datos, ya que no sera mas utilizada
+BEGIN TRAN
+DROP TABLE datos
+COMMIT
