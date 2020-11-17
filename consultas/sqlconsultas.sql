@@ -149,7 +149,7 @@ AND conferencia.nombre NOT LIKE confCP
 
 -- 12. Promedio de minutos jugados por partido de los jugadores originarios del país del punto 8. 
 --		Se considera partido jugado si jugó al menos 1 minuto en el partido.
-SELECT jugador.nombre, jugador.apellido, CONVERT (DECIMAL (10,2), sum(registro.valor)*1.0/count(registro.valor)) as Promedio FROM jugador
+SELECT jugador.nombre, jugador.apellido, CONVERT (DECIMAL (10,2), avg(registro.valor*1.0)) as Promedio FROM jugador
 INNER JOIN pais on pais.id_pais = jugador.id_pais
 INNER JOIN registro on registro.id_jugador = jugador.id_jugador
 INNER JOIN estadistica on estadistica.id_estadistica = registro.id_estadistica
