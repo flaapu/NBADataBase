@@ -16,27 +16,25 @@ WHERE equipo.id_equipo = partido.id_ganador AND equipo.nombre LIKE 'Raptors'
 GROUP BY equipo.nombre
 
 --4. Cantidad de partidos que ganaron los Raptors jugando como visitantes.
-SELECT equipo.nombre as 'Equipo visitaante', count(*) as 'Cantidad de partidos ganados'
-FROM partido, equipo, partidoxequipo
+SELECT equipo.nombre as 'Equipo visitante', count(*) as 'Cantidad de partidos ganados'
+FROM partido
+INNER JOIN partidoxequipo on partido.id_partido = partidoxequipo.id_partido
+INNER JOIN equipo on partidoxequipo.id_equipo = equipo.id_equipo
 WHERE equipo.id_equipo = partido.id_ganador 
 AND equipo.nombre LIKE 'Raptors' 
-AND partidoxequipo.id_partido = partido.id_partido 
 AND partidoxequipo.esLocal LIKE 'False'
 GROUP BY equipo.nombre
 
+
 --5. Mostrar nombre, apellido, camiseta y nombre de su equipo, del jugador con mayor promedio de asistencias por partido.
-SELECT jugador.nombre as 'Nombre jugador', jugador.apellido as 'Apellido jugador',
-contrata.nro_camiseta as 'Numero de camiseta', equipo.nombre as 'Nombre del equipo'
-FROM jugador, contrata, equipo, (
-SELECT max(promedio) as promedio_maximo FROM registro, (
-SELECT jugador.nombre as nombrecito, avg(registro.valor) as promedio FROM registro
-INNER JOIN jugador on registro.id_jugador = jugador.id_jugador
-INNER JOIN partido on registro.id_partido = partido.id_partido
+SELECT TOP 1 jugador.nombre as 'Nombre jugador',jugador.apellido as 'Apellido jugador',contrata.nro_camiseta as 'Numero de camiseta', equipo.nombre as 'Nombre del equipo' ,avg(registro.valor) as PromedioAsistencias from jugador
+INNER JOIN contrata on jugador.id_jugador = contrata.id_jugador
+INNER JOIN equipo on contrata.id_equipo = equipo.id_equipo
+INNER JOIN registro on jugador.id_jugador = registro.id_jugador
 INNER JOIN estadistica on registro.id_estadistica = estadistica.id_estadistica
-WHERE estadistica.descripcion LIKE 'Asistencias'
-GROUP BY partido.id_partido, jugador.nombre, jugador.apellido) as a) as player
-WHERE equipo.id_equipo = contrata.id_equipo
-GROUP BY jugador.nombre, jugador.apellido, contrata.nro_camiseta, equipo.nombre
+WHERE estadistica.descripcion='Asistencias'
+GROUP BY jugador.nombre,jugador.apellido,contrata.nro_camiseta, equipo.nombre
+ORDER BY avg(registro.valor) DESC
 
  --6. Listar los 5 primeros equipos ordenandos por mayor promedio de peso de sus jugadores.
 SELECT TOP 5 equipo.nombre as 'Nombre equipo', CONVERT (DECIMAL (10,2),
@@ -152,15 +150,15 @@ AND conferencia.nombre NOT LIKE confCP
 
 -- 12. Promedio de minutos jugados por partido de los jugadores originarios del país del punto 8. 
 --		Se considera partido jugado si jugó al menos 1 minuto en el partido.
-SELECT TOP 1 pais.nombre as Pais, count(jugador.id_jugador) as 'Cantidad de jugadores', avg(registro.valor) as Promedio FROM jugador
+SELECT jugador.nombre, jugador.apellido, avg(registro.valor) FROM jugador
 INNER JOIN pais on pais.id_pais = jugador.id_pais
 INNER JOIN registro on registro.id_jugador = jugador.id_jugador
 INNER JOIN estadistica on estadistica.id_estadistica = registro.id_estadistica
-WHERE pais.nombre NOT LIKE 'Estados Unidos' 
+WHERE pais.nombre LIKE 'Canada' 
 AND estadistica.descripcion LIKE 'Minutos'
 AND registro.valor > 0
-GROUP BY pais.nombre 
-ORDER BY 'Cantidad de jugadores' DESC
+GROUP BY jugador.nombre, jugador.apellido
+ORDER BY avg(registro.valor) DESC
 
 -- 13. Cantidad de jugadores con más de 15 años de carrera, cantidad entre 15 y 10 y cantidad con menos de 10 años.
 SELECT MasQuince as 'Mas de 15 años', EntreDiezQuince as 'Entre 15 y 10 años', MenosDiez as 'Menos de 10 años' FROM
