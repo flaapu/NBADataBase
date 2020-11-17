@@ -27,7 +27,7 @@ GROUP BY equipo.nombre
 
 
 --5. Mostrar nombre, apellido, camiseta y nombre de su equipo, del jugador con mayor promedio de asistencias por partido.
-SELECT TOP 1 jugador.nombre as 'Nombre jugador',jugador.apellido as 'Apellido jugador',contrata.nro_camiseta as 'Numero de camiseta', equipo.nombre as 'Nombre del equipo' ,avg(registro.valor) as PromedioAsistencias from jugador
+SELECT TOP 1 jugador.nombre as 'Nombre jugador',jugador.apellido as 'Apellido jugador',contrata.nro_camiseta as 'Numero de camiseta', equipo.nombre as 'Nombre del equipo' ,CONVERT(DECIMAL(10,2) ,avg(registro.valor*1.0)) as PromedioAsistencias from jugador
 INNER JOIN contrata on jugador.id_jugador = contrata.id_jugador
 INNER JOIN equipo on contrata.id_equipo = equipo.id_equipo
 INNER JOIN registro on jugador.id_jugador = registro.id_jugador
@@ -37,8 +37,7 @@ GROUP BY jugador.nombre,jugador.apellido,contrata.nro_camiseta, equipo.nombre
 ORDER BY avg(registro.valor) DESC
 
  --6. Listar los 5 primeros equipos ordenandos por mayor promedio de peso de sus jugadores.
-SELECT TOP 5 equipo.nombre as 'Nombre equipo', CONVERT (DECIMAL (10,2),
-avg(cast(SUBSTRING(jugador.peso, 1, CHARINDEX (' ', jugador.peso, 1)) as FLOAT))) as 'Promedio del peso'
+SELECT TOP 5 equipo.nombre as 'Nombre equipo', CONVERT (DECIMAL (10,2), avg(cast(SUBSTRING(jugador.peso, 1, CHARINDEX (' ', jugador.peso, 1)) as FLOAT))) as 'Promedio del peso'
 FROM equipo 
 INNER JOIN contrata on contrata.id_equipo = equipo.id_equipo
 INNER JOIN jugador on jugador.id_jugador = contrata.id_jugador
@@ -150,7 +149,7 @@ AND conferencia.nombre NOT LIKE confCP
 
 -- 12. Promedio de minutos jugados por partido de los jugadores originarios del país del punto 8. 
 --		Se considera partido jugado si jugó al menos 1 minuto en el partido.
-SELECT jugador.nombre, jugador.apellido, avg(registro.valor) FROM jugador
+SELECT jugador.nombre, jugador.apellido, CONVERT (DECIMAL (10,2), sum(registro.valor)*1.0/count(registro.valor)) as Promedio FROM jugador
 INNER JOIN pais on pais.id_pais = jugador.id_pais
 INNER JOIN registro on registro.id_jugador = jugador.id_jugador
 INNER JOIN estadistica on estadistica.id_estadistica = registro.id_estadistica
